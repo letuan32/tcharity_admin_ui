@@ -16,7 +16,7 @@ AppWebsiteVisits.propTypes = {
 
 export default function AppWebsiteVisits({ title, subheader, chartLabels, chartData, ...other }) {
   const chartOptions = useChart({
-    plotOptions: { bar: { columnWidth: '16%' } },
+    plotOptions: { bar: { columnWidth: '50%' } },
     fill: { type: chartData.map((i) => i.fill) },
     labels: chartLabels,
     xaxis: { type: 'datetime' },
@@ -26,7 +26,7 @@ export default function AppWebsiteVisits({ title, subheader, chartLabels, chartD
       y: {
         formatter: (y) => {
           if (typeof y !== 'undefined') {
-            return `${y.toFixed(0)} visits`;
+            return `${y.toFixed(0)} donations`;
           }
           return y;
         },
