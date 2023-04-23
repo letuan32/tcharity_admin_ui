@@ -35,11 +35,12 @@ import USERLIST from '../_mock/donation';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'caption', label: 'Caption', alignRight: false },
-  { id: 'posts', label: 'Posts', alignRight: false },
+  { id: 'expectedAmount', label: 'Expect Amount', alignRight: false },
+  { id: 'expectedDate', label: 'Expect Receiver Date', alignRight: false },
+  { id: 'donatedAmount', label: 'Current Amount', alignRight: false },
+  { id: 'currency', label: 'Currency', alignRight: false },
   { id: 'isVerified', label: 'Verified', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -188,7 +189,7 @@ export default function DonationPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, posts, status, caption, avatarUrl, isVerified } = row;
+                    const { id, name, expectedAmount, expectedDate, caption, avatarUrl, isVerified, currency, donatedAmount, status } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
@@ -206,9 +207,11 @@ export default function DonationPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{caption}</TableCell>
+                        <TableCell align="left">{expectedAmount}</TableCell>
 
-                        <TableCell align="left">{posts}</TableCell>
+                        <TableCell align="left">{expectedDate.toString()}</TableCell>
+                        <TableCell align="left">{donatedAmount} {currency}</TableCell>
+
 
                         <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
 
