@@ -11,6 +11,7 @@ import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import DonationPage from "./pages/DonationPage";
 import PostPage from "./pages/PostPage";
+import PostVerifyPage from "./pages/PostVerifyPage";
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'post', element: <PostPage /> },
+        { path: 'post-verify', element: <PostVerifyPage /> },
         { path: 'donation', element: <DonationPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },

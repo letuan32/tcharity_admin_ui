@@ -23,7 +23,110 @@ import {
 export default function DashboardAppPage() {
   const theme = useTheme();
 
-  return (
+    function getChartData() {
+        return [
+            {label: 'Donors', value: 20},
+            {label: 'Beneficiaries', value: 10},
+            {label: 'Volunteers', value: 5},
+            {label: 'Charitable organizations', value: 2},
+            {label: 'Social enterprises', value: 2},
+            {label: 'Students', value: 36},
+            {label: 'Social Workers', value: 20},
+            {label: 'Other', value: 13},
+        ];
+    }
+
+
+    function getChartLabels() {
+        return [
+            '01/01/2003',
+            '02/01/2003',
+            '03/01/2003',
+            '04/01/2003',
+            '05/01/2003',
+            '06/01/2003',
+            '07/01/2003',
+            '08/01/2003',
+            '09/01/2003',
+            '10/01/2003',
+            '11/01/2003',
+        ];
+    }
+
+    function getChartData1() {
+        return [
+            {
+                name: 'Supporting Request',
+                type: 'column',
+                fill: 'solid',
+                data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+            },
+            {
+                name: 'Sharing',
+                type: 'column',
+                fill: 'gradient',
+                data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+            },
+            {
+                name: 'Fundraising',
+                type: 'column',
+                fill: 'yellow',
+                data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+            }
+        ];
+    }
+
+    function getChartData2() {
+        return [
+            {label: 'Sharing', value: 4344},
+            {label: 'Request Financial', value: 5435},
+            {label: 'Fundraising', value: 1443},
+        ];
+    }
+
+    function getChartData3() {
+        return [
+            {label: 'ZaloPay', value: 10},
+            {label: 'Paypal', value: 23},
+        ];
+    }
+
+    function extracted(index) {
+        return {
+            id: faker.datatype.uuid(),
+            title: faker.name.jobTitle(),
+            description: faker.name.jobTitle(),
+            image: `/assets/images/covers/cover_${index + 1}.jpg`,
+            postedAt: faker.date.recent(),
+        };
+    }
+
+    function extracted2(index) {
+        return {
+            id: faker.datatype.uuid(),
+            title: faker.name.jobTitle(),
+            description: faker.name.jobTitle(),
+            image: `/assets/images/covers/cover_${index + 1}.jpg`,
+            postedAt: faker.date.recent(),
+        };
+    }
+
+    function getChartColors() {
+        return [
+            theme.palette.primary.main,
+            theme.palette.info.main,
+            theme.palette.warning.main,
+        ];
+    }
+
+    function getChartColors1() {
+        return [
+            theme.palette.warning.main,
+            theme.palette.error.main,
+        ];
+    }
+
+    return (
     <>
       <Helmet>
         <title> Dashboard | TCharity </title>
@@ -55,113 +158,45 @@ export default function DashboardAppPage() {
             <Grid item xs={12} md={6} lg={8}>
                 <AppWebsiteVisits
                     title="Number of Posts"
-                    // subheader="(+43%) than last year"
-                    chartLabels={[
-                        '01/01/2003',
-                        '02/01/2003',
-                        '03/01/2003',
-                        '04/01/2003',
-                        '05/01/2003',
-                        '06/01/2003',
-                        '07/01/2003',
-                        '08/01/2003',
-                        '09/01/2003',
-                        '10/01/2003',
-                        '11/01/2003',
-                    ]}
-                    chartData={[
-                        {
-                            name: 'Supporting Request',
-                            type: 'column',
-                            fill: 'solid',
-                            data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                        },
-                        {
-                            name: 'Sharing',
-                            type: 'column',
-                            fill: 'gradient',
-                            data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                        },
-                        {
-                            name: 'Fundraising',
-                            type: 'column',
-                            fill: 'yellow',
-                            data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                        }
-                    ]}
+                    chartLabels={getChartLabels()}
+                    chartData={getChartData1()}
                 />
             </Grid>
 
             <Grid item xs={12} md={6} lg={4}>
                 <AppCurrentVisits
                     title="Post Categories"
-                    chartData={[
-                        {label: 'Sharing', value: 4344},
-                        {label: 'Request Financial', value: 5435},
-                        {label: 'Fundraising', value: 1443},
-                    ]}
-                    chartColors={[
-                        theme.palette.primary.main,
-                        theme.palette.info.main,
-                        theme.palette.warning.main,
-                    ]}
+                    chartData={getChartData2()}
+                    chartColors={getChartColors()}
                 />
             </Grid>
 
             <Grid item xs={12} md={6} lg={8}>
                 <AppConversionRates
                     title="User Groups"
-                    // subheader="(+43%) than last year"
-                    chartData={[
-                        {label: 'Donors', value: 20},
-                        {label: 'Beneficiaries', value: 10},
-                        {label: 'Volunteers', value: 5},
-                        {label: 'Charitable organizations', value: 2},
-                        {label: 'Social enterprises', value: 2},
-                        {label: 'Students', value: 36},
-                        {label: 'Social Workers', value: 20},
-                        {label: 'Other', value: 13},
-                    ]}
+                    chartData={getChartData()}
                 />
             </Grid>
 
             <Grid item xs={12} md={6} lg={4}>
                 <AppCurrentVisits
                     title="Donations by Payment Method"
-                    chartData={[
-                        {label: 'ZaloPay', value: 10},
-                        {label: 'Paypal', value: 23},
-                    ]}
-                    chartColors={[
-                        theme.palette.warning.main,
-                        theme.palette.error.main,
-                    ]}
+                    chartData={getChartData3()}
+                    chartColors={getChartColors1()}
                 />
             </Grid>
 
             <Grid item xs={12} md={6} lg={8}>
                 <AppNewsUpdate
                     title="Most View Posts"
-                    list={[...Array(5)].map((_, index) => ({
-                        id: faker.datatype.uuid(),
-                        title: faker.name.jobTitle(),
-                        description: faker.name.jobTitle(),
-                        image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                        postedAt: faker.date.recent(),
-                    }))}
+                    list={[...Array(5)].map((_, index) => extracted(index))}
                 />
             </Grid>
 
         <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
                 title="Most Donation Posts"
-                list={[...Array(5)].map((_, index) => ({
-                    id: faker.datatype.uuid(),
-                    title: faker.name.jobTitle(),
-                    description: faker.name.jobTitle(),
-                    image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                    postedAt: faker.date.recent(),
-                }))}
+                list={[...Array(5)].map((_, index) => extracted2(index))}
             />
         </Grid>
         </Grid>

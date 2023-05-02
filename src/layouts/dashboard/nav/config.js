@@ -22,6 +22,11 @@ const navConfig = [
     icon: icon('ic_post'),
   },
   {
+    title: 'post_verify',
+    path: '/dashboard/post-verify',
+    icon: icon('ic_post'),
+  },
+  {
     title: 'donation',
     path: '/dashboard/donation',
     icon: icon('ic_donation'),

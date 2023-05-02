@@ -29,7 +29,7 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/donation';
+import USERLIST from '../_mock/post';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +38,6 @@ const TABLE_HEAD = [
   { id: 'expectedAmount', label: 'Expect Amount', alignRight: false },
   { id: 'expectedDate', label: 'Expect Receiver Date', alignRight: false },
   { id: 'donatedAmount', label: 'Current Amount', alignRight: false },
-  { id: 'currency', label: 'Currency', alignRight: false },
   { id: 'isVerified', label: 'Verified', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
 ];

@@ -35,12 +35,10 @@ import USERLIST from '../_mock/donation';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'expectedAmount', label: 'Expect Amount', alignRight: false },
-  { id: 'expectedDate', label: 'Expect Receiver Date', alignRight: false },
-  { id: 'donatedAmount', label: 'Current Amount', alignRight: false },
-  { id: 'currency', label: 'Currency', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'postId', label: 'Post Id', alignRight: false },
+  { id: 'amount', label: 'Amount', alignRight: false },
+  { id: 'paymentDate', label: 'Date', alignRight: false },
+  { id: 'paymentService', label: 'Payment Service', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -159,17 +157,14 @@ export default function DonationPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Donation | Minimal UI </title>
       </Helmet>
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Donation
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
         </Stack>
 
         <Card>
@@ -189,7 +184,7 @@ export default function DonationPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, expectedAmount, expectedDate, caption, avatarUrl, isVerified, currency, donatedAmount, status } = row;
+                    const { id, postId, name, amount, paymentDate, avatarUrl, paymentService, currency } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
@@ -207,18 +202,11 @@ export default function DonationPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{expectedAmount}</TableCell>
+                        <TableCell align="left">{postId}</TableCell>
+                        <TableCell align="left">{amount} {currency}</TableCell>
 
-                        <TableCell align="left">{expectedDate.toString()}</TableCell>
-                        <TableCell align="left">{donatedAmount} {currency}</TableCell>
-
-
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell>
-
+                        <TableCell align="left">{paymentDate.toString()}</TableCell>
+                        <TableCell align="left">{paymentService}</TableCell>
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
