@@ -1,27 +1,24 @@
 import { AxiosError, AxiosRequestConfig } from 'axios'
 import { getAuth } from 'firebase/auth';
+import {useDispatch} from "react-redux";
 import axiosApiGatewayInstance from './baseApi'
 import { exchangeIdTokenForRefreshToken } from './refreshToken'
-import {useDispatch} from "react-redux";
-import {setLogin} from "../state";
-const setUpInterceptor = (store) => {
+
+const setUpInterceptor = () => {
     const auth = getAuth();
-    const handleError = async (error) => {
-        return Promise.reject(error)
-    }
+    const token = localStorage.getItem('token')
+    const refreshToken = localStorage.getItem('refreshToken')
+    const handleError = async (error) => Promise.reject(error)
 
     axiosApiGatewayInstance.interceptors.request.use(
         (config) => {
-            const token = store.getState().token
             if (token) {
+                console.log('File: setupInterceptor.js, Line 16:  ');
                 config.headers.Authorization = `Bearer ${token}`;
             }
             return config;
         },
-        (error) => {
-            return Promise.reject(error);
-
-        }
+        (error) => Promise.reject(error)
     )
 
     axiosApiGatewayInstance.interceptors.response.use(
@@ -34,15 +31,15 @@ const setUpInterceptor = (store) => {
 
                 try {
                     // Get the new token
-                    const newToken = await exchangeIdTokenForRefreshToken(store.getState().refreshToken);
+                    const newToken = await exchangeIdTokenForRefreshToken(refreshToken);
 
                     // Update the token in the Redux store
                     const dispatch = useDispatch();
-                    dispatch(setLogin({
-                        user: newToken.displayName,
-                        token: newToken.idToken,
-                        refreshToken: newToken.refreshToken,
-                    }));
+                    localStorage.setItem('token', newToken.idToken);
+                    localStorage.setItem('user', newToken.displayName);
+                    localStorage.setItem('refreshToken', newToken.refreshToken);
+                    localStorage.setItem('userId', newToken.localId);
+
 
                     // Set the new token in the Authorization header
                     originalRequest.headers.Authorization = `Bearer ${newToken}`;

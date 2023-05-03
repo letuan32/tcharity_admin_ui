@@ -15,8 +15,10 @@ import { ref, get, set, push, child, remove , onValue, off   } from "firebase/da
 import {timeStampToDate, timeStampToDateString} from "../utils/formatDate";
 import VerifyPostWidget from "../components/posts/VerifyPostWidget";
 import {realtimeDB} from "../firebase/firebase";
+import setUpInterceptor from "../apiService/setupInterceptor";
 
 const PostVerifyPage = () => {
+  setUpInterceptor();
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);

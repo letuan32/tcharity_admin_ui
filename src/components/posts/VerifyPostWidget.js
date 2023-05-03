@@ -27,6 +27,7 @@ import MediaCard from './MediaCard'
 import MediaCarousel from "./MediaCarousel";
 import Following from "../Following";
 import PostAuthor from "../PostAuthor";
+import setUpInterceptor from "../../apiService/setupInterceptor";
 
 const VerifyPostWidget = ({
                               postId,
@@ -42,6 +43,7 @@ const VerifyPostWidget = ({
                               expectedAmount,
                               currency
                           }) => {
+    setUpInterceptor();
     const navigate = useNavigate();
     const [isLongCaption, setIsLongCaption] = useState(false);
     const isNonMobileScreens = useMediaQuery("(min-width: 800px)");

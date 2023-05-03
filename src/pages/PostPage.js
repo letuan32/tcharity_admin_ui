@@ -35,7 +35,7 @@ import {realtimeDB} from "../firebase/firebase";
 import DonationAmount from "../components/posts/DonationAmount";
 import PostStatus from "../components/posts/PostStatus";
 import {disburseDonation} from "../apiService/baseApi";
-
+import setUpInterceptor from "../apiService/setupInterceptor";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -79,6 +79,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function PostPage() {
+  setUpInterceptor();
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
