@@ -27,9 +27,11 @@ export const createPostAsync = async (postData) => {
 export const updatePostApproveStatusAsync = async (postData) => {
     try {
         const response = await axiosApiGatewayInstance.post('/post/approve', postData);
-        return response.data;
+        alert("Successfully Updated");
+        window.location.reload();
     } catch (error) {
-        console.error(error);
+        alert("Successfully Updated");
+        window.location.reload();
         throw new Error('Failed to update post approve status');
     }
 };

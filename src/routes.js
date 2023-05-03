@@ -16,10 +16,12 @@ import PostVerifyPage from "./pages/PostVerifyPage";
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const token = localStorage.getItem('token')
+  const isLogin = token !== null;
   const routes = useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: isLogin ? <DashboardLayout /> : <Navigate to="/login" />,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
