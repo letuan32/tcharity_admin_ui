@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 // @mui
 import {
   Card,
@@ -23,22 +23,27 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
+import {onValue, ref} from "firebase/database";
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/post';
+import posts from '../_mock/post';
+import {realtimeDB} from "../firebase/firebase";
+import DonationAmount from "../components/posts/DonationAmount";
+import PostStatus from "../components/posts/PostStatus";
+import {disburseDonation} from "../apiService/baseApi";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'name', label: 'Author', alignRight: false },
+  { id: 'postId', label: 'Post Id', alignRight: false },
   { id: 'expectedAmount', label: 'Expect Amount', alignRight: false },
   { id: 'expectedDate', label: 'Expect Receiver Date', alignRight: false },
   { id: 'donatedAmount', label: 'Current Amount', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
 ];
 
@@ -81,6 +86,7 @@ export default function PostPage() {
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const [orderBy, setOrderBy] = useState('name');
 
@@ -89,6 +95,29 @@ export default function PostPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [isHovering, setIsHovering] = useState(false);
+
+  const [posts, setPosts] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const serverUrl =  process.env.REACT_APP_ENV === "Development" ? "https://localhost:7010/" : process.env.REACT_APP_API_GATEWAY
+  const token = localStorage.getItem("token") ?? "";
+
+  const getPosts = async () => {
+    const response = await fetch( `${serverUrl  }Post`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}`}
+    });
+
+    const responseData = await response.json();
+    setPosts(responseData.posts)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    setIsLoading(true)
+    getPosts()
+  }, [])
   const handleMouseEnter = () => {
     setIsHovering(true);
   };
@@ -113,7 +142,7 @@ export default function PostPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = posts.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -149,16 +178,38 @@ export default function PostPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - posts.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(posts, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const openRealTimeDonation = (postId) => {
+    const postRef = ref(realtimeDB, `post-approval/${postId}`);
+    onValue(postRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log('File: PostPage.js, Line 187: data ', data);
+      return data;
+    });
+  }
+
+  const handleDisburse = async () => {
+    const id = selected[0];
+    const post = posts.find((post) => post.id === id);
+    console.log('File: PostPage.js, Line 200: post ', post);
+    const response = await disburseDonation(post.id, post.author.email);
+  }
+
+  if(isLoading)
+  {
+    return (
+      <div className="center"/>
+    )
+  }
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Post | Minimal UI </title>
       </Helmet>
 
       <Container>
@@ -181,20 +232,30 @@ export default function PostPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={posts.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, expectedAmount, expectedDate, caption, avatarUrl, isVerified, currency, donatedAmount, status } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    // const { id, name, expectedAmount, expectedDate, content, avatarUrl, isVerified, currency, donatedAmount, status } = row;
+                    const {id} = row;
+                    const name = row.author.displayName;
+                    const authorEmail = row.author.email;
+                    const {expectedAmount} = row;
+                    const expectedDate = row.expectedReceivedDate;
+                    const {content} = row;
+                    const {avatarUrl} = row.author;
+                    const {currency} = row;
+                    const status = row.approveStatus;
+
+                    const selectedUser = selected.indexOf(id) !== -1;
 
                     return (
                       <TableRow hover key={id} tabIndex={-1} posts="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
@@ -205,17 +266,18 @@ export default function PostPage() {
                             </Typography>
                           </Stack>
                         </TableCell>
+                        <TableCell align="left">{id}</TableCell>
 
                         <TableCell align="left">{expectedAmount}</TableCell>
 
                         <TableCell align="left">{expectedDate.toString()}</TableCell>
-                        <TableCell align="left">{donatedAmount} {currency}</TableCell>
-
-
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
                         <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                          <DonationAmount postId={id} currency={currency}  />
+                        </TableCell>
+                        <TableCell align="left">
+                          <Label >
+                            <PostStatus postId={id}/>
+                          </Label>
                         </TableCell>
 
                         <TableCell align="right">
@@ -263,7 +325,7 @@ export default function PostPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={posts.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -290,14 +352,9 @@ export default function PostPage() {
           },
         }}
       >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
+        <MenuItem onClick={handleDisburse}>
+          <Iconify sx={{ mr: 2 }} />
+          Disburse
         </MenuItem>
       </Popover>
     </>

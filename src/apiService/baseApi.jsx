@@ -34,4 +34,16 @@ export const updatePostApproveStatusAsync = async (postData) => {
     }
 };
 
+export const disburseDonation = async (postId, userEmail) => {
+    try {
+        const response = await axiosApiGatewayInstance.post('/donation/disburse', {
+            postId,
+            userEmail
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Failed to disburse donation');
+    }
+};
 

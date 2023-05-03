@@ -22,7 +22,7 @@ const navConfig = [
     icon: icon('ic_post'),
   },
   {
-    title: 'post_verify',
+    title: 'post submission',
     path: '/dashboard/post-verify',
     icon: icon('ic_post'),
   },

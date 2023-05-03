@@ -75,7 +75,6 @@ const PostVerifyPage = () => {
       const selectedPostId = localStorage.getItem("selectPostId")
       off(requestsRef, null);
       if(selectedPostId === null) return;
-      alert(selectedPostId )
       removePostInProcess(selectedPostId)
       localStorage.removeItem("selectPostId")
 
@@ -92,7 +91,6 @@ const PostVerifyPage = () => {
 
   const removePostInProcess = (postId) => {
     const nodeRef = ref(realtimeDB, `approve-processing/${postId}`);
-
     remove(nodeRef)
         .then(() => {
           console.log("Node removed successfully");
@@ -264,7 +262,7 @@ const PostVerifyPage = () => {
                   <TablePagination
                       rowsPerPageOptions={[5, 10, 25]}
                       component="div"
-                      count={4}
+                      count={posts.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onPageChange={handleChangePage}
